@@ -12,46 +12,69 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
     <meta charset="UTF-8">
     <title>FileSafety</title>
     <script src="funciones.js"></script>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href=
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="estilo.css" type="text/css">
+
 </head>
 <body>
-<div id="nav">
-    <div id="logo">
-        <div id="img-logo">
-            <img alt="FileSafety" src="images/descarga.jfif">
-        </div>
-        <div id="nombre-logo">
-            <h1>FileSafety</h1>
-        </div>
-    </div>
-    <?php
-    if (!isset($_SESSION['u_id'])) {
-        ?>
-        <div class="userbtns" id="inicio-sesion">
-            <!-- Trigger/Open The Modal -->
-            <button id="loginbtn">Iniciar sesión</button>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand mb-2 mt-2" href="#">
+        <img class=".align-top .align-middle .align-bottom" alt="FileSafety"
+             src="images/descarga.jfif" width="50" height="50">
+        FileSafety
+    </a>
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <?php
+            if (!isset($_SESSION['u_id'])) {
+                ?>
+                <li class="nav-item mr-2 mb-2">
+                    <span>
+                        <!-- Trigger/Open The Modal -->
+                        <button class="btn btn-outline-info my-2 my-sm-0"
+                                id="loginbtn">
+                            Iniciar sesiÃ³n
+                        </button>
+                    </span>
+                </li>
 
-        <div class="userbtns" id="registro">
-            <!-- Trigger/Open The Modal -->
-            <button id="registerbtn">Registrarse</button>
-        </div>
-        <?php
-    } else {
-        ?>
-        <div class="userbtns" id="inicio-sesion">
-            <!-- Trigger/Open The Modal -->
-            <span>¡Hola <?php echo($_SESSION['username']) ?>!</span>
-        </div>
-        <div class="userbtns" id="logout">
-            <!-- Trigger/Open The Modal -->
-            <button id="logoutbtn">Cerrar sesión</button>
-        </div>
-    <?php } ?>
-</div>
+                <li class="nav-item">
+                    <!-- Trigger/Open The Modal -->
+                    <button class="btn btn-outline-info my-2 my-sm-0"
+                            id="registerbtn">
+                        Registrarse
+                    </button>
+                </li>
+                <?php
+            } else {
+                ?>
+                <li class="nav-item mr-2">
+                    <span class="nav-link">
+                        Â¡Hola <?php echo($_SESSION['username']) ?>!
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <!-- Trigger/Open The Modal -->
+                    <button class="btn btn-outline-info my-2 my-sm-0"
+                            id="logoutbtn">
+                        Cerrar sesiÃ³n
+                    </button>
+                </li>
+                <?php
+            }
+            ?>
+        </ul>
+    </div>
+</nav>
 <div id="espacioBlanco">
-    <h1>¿Quieres almacenar cosas de forma segura? Has llegado al lugar indicado! :3</h1>
-    <h2>Regístrate o inicia sesión para almacenar tus archivos. Tranquilo/a, estarán seguros con nosotros jeje</h2>
+    <h1>Â¿Quieres almacenar cosas de forma segura? Has llegado al lugar indicado! :3</h1>
+    <h2>RegÃ­strate o inicia sesiÃ³n para almacenar tus archivos. Tranquilo/a, estarÃ¡n seguros con nosotros jeje</h2>
     <h2>Y puedes compartirlos medianto una URL! WOW!</h2>
     <img alt="gif to guapo" src="https://media.tenor.com/images/5185e189880510119152ade7d0859fcc/tenor.gif">
 </div>
@@ -64,7 +87,7 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
         <span class="close">&times;</span>
         <form class="form_usuario" action="includes/loginUsuario-intermedio.php" method="post">
             <fieldset>
-                <legend>Datos básicos</legend>
+                <legend>Datos bÃ¡sicos</legend>
                 <label>Usuario</label>
                 <br/>
                 <label>
@@ -72,16 +95,16 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
                 </label>
                 <br/>
                 <br/>
-                <label>Contraseña</label>
+                <label>ContraseÃ±a</label>
                 <br/>
                 <label>
                     <input type="password" id="login_password" name="password" required/>
                 </label>
                 <br/>
                 <br/>
-                <button type="submit" name="loginsubmit">Iniciar sesión</button>
-                <p>¿Aún no tienes cuenta?
-                    <a href="javascript:changeModal()">Regístratre</a>
+                <button type="submit" name="loginsubmit">Iniciar sesiÃ³n</button>
+                <p>Â¿AÃºn no tienes cuenta?
+                    <a href="javascript:changeModal()">RegÃ­stratre</a>
                 </p>
             </fieldset>
         </form>
@@ -95,7 +118,7 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
         <span class="close">&times;</span>
         <form class="form_usuario" action="includes/regUsuario-intermedio.php" method="post">
             <fieldset>
-                <legend>Datos básicos</legend>
+                <legend>Datos bÃ¡sicos</legend>
                 <label>Usuario</label>
                 <br/>
                 <label>
@@ -110,14 +133,14 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
                 </label>
                 <br/>
                 <br/>
-                <label>Contraseña</label>
+                <label>ContraseÃ±a</label>
                 <br/>
                 <label>
                     <input type="password" id="reg_password" name="password" required/>
                 </label>
                 <br/>
                 <br/>
-                <label>Confirma la contraseña</label>
+                <label>Confirma la contraseÃ±a</label>
                 <br/>
                 <label>
                     <input type="password" id="password2" name="password2" required/>
@@ -125,14 +148,14 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
                 <br/>
                 <br/>
                 <button type="submit" name="registrosubmit">Registrarse</button>
-                <p>¿Ya tienes cuenta?
-                    <a href="javascript:changeModal()">Inicia sesión</a>
+                <p>Â¿Ya tienes cuenta?
+                    <a href="javascript:changeModal()">Inicia sesiÃ³n</a>
                 </p>
             </fieldset>
         </form>
     </div>
 </div>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
     // Get the modal
     var modal_Login = document.getElementById("login");
     var modal_register = document.getElementById("register");
@@ -188,5 +211,3 @@ include(dirname(__FILE__) . "/includes/login_usuario.php");
 </script>
 </body>
 </html>
-
-
