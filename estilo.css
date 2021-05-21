@@ -30,20 +30,30 @@ label {
 }
 
 /* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+/*.close {*/
+/*    color: #aaa;*/
+/*    float: right;*/
+/*    font-size: 28px;*/
+/*    font-weight: bold;*/
+/*}*/
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+/*.close:hover,*/
+/*.close:focus {*/
+/*    color: black;*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
 
-.btn-outline-info{
+#registerbtn.btn-outline-info{
     width: 116.8px;
+}
+
+a svg {
+    color: #fff;
+}
+
+@media screen and (max-width: 450px) {
+    a.tam {
+        font-size: 3.5vw;
+    }
 }

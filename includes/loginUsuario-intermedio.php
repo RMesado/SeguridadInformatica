@@ -15,8 +15,6 @@ if(isset($_POST['loginsubmit']))
 
     try
     {
-
-        $passwd = password_hash($passwd, PASSWORD_BCRYPT);
         login_usuario($conn, $user, $passwd);
 
         header("Location: https://filesafety.000webhostapp.com/");
