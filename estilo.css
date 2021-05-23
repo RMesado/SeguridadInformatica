@@ -134,3 +134,8 @@ div.upload-file label {
     font-family: sans-serif;
     text-align: center;
 }
+@media screen and (max-width: 450px) {
+    a.tam {
+        font-size: 3.5vw;
+    }
+}
