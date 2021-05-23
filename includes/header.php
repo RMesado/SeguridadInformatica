@@ -1,8 +1,8 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand mb-2 mt-2" href="#">
+        <a class="navbar-brand" href="index.php">
             <img class=".align-top .align-middle .align-bottom" alt="FileSafety"
-                 src="images/descarga.jfif" width="50" height="50">
+                 src="images/filesecurity.png" width="100">
             FileSafety
         </a>
         <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -40,10 +40,10 @@
                     </li>
                     <li class="nav-item">
                         <!-- Trigger/Open The Modal -->
-                        <button class="btn btn-outline-info my-2 my-sm-0"
+                        <a href="/includes/logout.php" class="btn btn-outline-info my-2 my-sm-0"
                                 id="logoutbtn">
                             Cerrar sesión
-                        </button>
+                        </a>
                     </li>
                     <?php
                 }
