@@ -29,12 +29,12 @@
                        // exit();
                    // }
                 } else {
-                    header('Location: ../login.php?log=error1');
+                    header('Location: ../index.php?log=error1');
                 }
                 exit();
             }
         } catch (PDOException $ex) {
-            header('Location: ../login.php?log=error2');
+            header('Location: ../index.php?log=error2');
             exit();
         }
     }

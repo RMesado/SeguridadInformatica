@@ -28,7 +28,7 @@ if(isset($_POST['loginsubmit']))
 }
 else
 {
-    header("Location: ../login.php?msg=error");
+    header("Location: ../index.php?msg=error");
     exit();
 }
 

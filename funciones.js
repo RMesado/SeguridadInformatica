@@ -11,56 +11,55 @@ function changeModal() {
     }
 }
 
-function validacionEmail() {
-    let email = document.getElementById('email');
+function validacionEmail(email) {
     const patron = /\S+@\S+\.\S+/;
-
-
     if (!patron.test(email.value)) //Regular expressions to validate email
     {
-        email.style.borderColor = 'red';
+        email.classList.add("borderRed");
     } else {
-        email.style.borderColor = 'green'
+        email.classList.remove("borderRed");
+        email.classList.add("borderGreen");
     }
 
 
 }
 
-function validacionUsername() {
-    let username = document.getElementById("username")
-    if (!/^[a-zA-Z]*$/g.test(username.value)) {
+function validacionUsername(username) {
+    const patron = /^[a-zA-Z]*$/g;
+    if (!patron.test(username.value)) {
         username.style.borderColor = 'red';
     } else {
         username.style.borderColor = 'green'
     }
 }
 
-function validacionPasswd() {
-    let password = document.getElementById("password")
-    let password2 = document.getElementById("password2")
+function validacionPasswd(password) {
 
     if (password.value.length < 4) {
-        password.style.borderColor = 'red';
+        password.classList.add("borderRed");
     } else if (password.value.search(/[a-z]/) < 0) {
-        password.style.borderColor = 'red';
+        password.classList.add("borderRed");
     } else if (password.value.search(/[A-Z]/) < 0) {
-        password.style.borderColor = 'red';
+        password.classList.add("borderRed");
     } else if (password.value.search(/[0-9]/) < 0) {
-        password.style.borderColor = 'red';
+        password.classList.add("borderRed");
     } else {
-        password.style.borderColor = 'green'
+        password.classList.remove("borderRed");
+        password.classList.add("borderGreen");
     }
+}
 
-    if (password2.value.length < 4) {
-        password2.style.borderColor = 'red';
-    } else if (password2.value.search(/[a-z]/) < 0) {
-        password2.style.borderColor = 'red';
-    } else if (password2.value.search(/[A-Z]/) < 0) {
-        password2.style.borderColor = 'red';
-    } else if (password2.value.search(/[0-9]/) < 0) {
-        password2.style.borderColor = 'red';
+function validacionPasswd2() {
+    let password2 = document.getElementById("password2")
+    let password = document.getElementById("reg_password")
+    if (password2.value.length==0 || password2.value != password2.value) {
+        if(password2.classList.contains("borderGreen"))
+            password2.classList.remove("borderGreen")
+        password2.classList.add("borderRed");
     } else {
-        password2.style.borderColor = 'green'
+        if(password2.classList.contains("borderRed"))
+            password2.classList.remove("borderRed")
+        password2.classList.add("borderGreen");
     }
 }
 

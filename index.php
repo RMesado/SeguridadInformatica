@@ -92,18 +92,20 @@ include_once "includes/footer.php";
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" role="tabpanel">
-                                    <form class="form-group" action="includes/loginUsuario-intermedio.php"
+                                    <form class="form-group needs-validation" novalidate action="includes/loginUsuario-intermedio.php"
                                           method="post">
                                         <div class="form-group">
                                             <h4>Usuario</h4>
-                                            <input type="text" class="form-control" id="reg_username" name="user"
+                                            <input onkeyup="validacionUsername(this)" type="text" class="form-control" id="reg_username" name="user"
                                                    placeholder="Introduce usuario o email" required/>
+                                            <div class ="invalid-feedback">Introduce un usuario válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Contraseña</h4>
-                                            <input class="form-control" type="password" id="reg_password"
+                                            <input onkeyup="validacionPasswd(this)" class="form-control" type="password" id="reg_password"
                                                    name="password"
-                                                   placeholder="Introduce la contraseña" required/>
+                                                   placeholder="Introduce la contraseña" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+                                            <div class ="invalid-feedback">Introduce una contraseña de al menos 8 caracteres, una mayúscula y un número</div>
                                         </div>
                                         <button class="btn btn-dark btn-block" type="submit" name="loginsubmit">Iniciar
                                             sesión
@@ -139,28 +141,32 @@ include_once "includes/footer.php";
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" role="tabpanel">
-                                    <form class="form-group" action="includes/regUsuario-intermedio.php" method="post">
+                                    <form class="form-group needs-validation" oninput='password2.setCustomValidity(password2.value != reg_password.value ? "Las contraseñas no coinciden" : "")' novalidate action="includes/regUsuario-intermedio.php" method="post">
                                         <div class="form-group">
                                             <h4>Usuario</h4>
                                             <input type="text" class="form-control" id="reg_username" name="username"
                                                    placeholder="Introduce un usuario" required/>
+                                            <div class ="invalid-feedback">Introduce un usuario válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Correo</h4>
                                             <input class="form-control" type="email" id="email" name="email"
-                                                   placeholder="Introduce un email"
+                                                   placeholder="Introduce un email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                                    required/>
+                                            <div class ="invalid-feedback">Introduce un email válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Contraseña</h4>
                                             <input class="form-control" type="password" id="reg_password"
-                                                   name="password"
-                                                   placeholder="Introduce una contraseña" required/>
+                                                   name="password1"
+                                                   placeholder="Introduce una contraseña" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+                                            <div class ="invalid-feedback">Introduce una contraseña de al menos 8 caracteres, una mayúscula y un numero</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Confirma la contraseña</h4>
                                             <input class="form-control" type="password" id="password2" name="password2"
                                                    placeholder="Confirma la contraseña" required/>
+                                            <div class ="invalid-feedback">Las contraseñas deben coincidir</div>
                                         </div>
                                         <button class="btn btn-dark btn-block" type="submit" name="registrosubmit">
                                             Registrarse
@@ -254,7 +260,24 @@ include_once "includes/footer.php";
     <?php
     }
     ?>
+    (function () {
+        'use strict'
 
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
 </script>
 </body>
 </html>

@@ -139,3 +139,11 @@ div.upload-file label {
         font-size: 3.5vw;
     }
 }
+
+#registerbtn.btn-outline-info{
+    width: 116.8px;
+}
+
+.borderGrey {border:2px solid Grey;}
+.borderRed {border-color: red;}
+.borderGreen {border-color: green;}
