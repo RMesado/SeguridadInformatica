@@ -48,6 +48,7 @@ $directorio = "files/" . $id;
         <?php
         if (!empty($files)) {
             foreach ($files as $columna_files => $value) {
+                $code_hasheado = password_hash($value['code'], PASSWORD_BCRYPT);
                 $ftype = explode(".", $value['filename']);
                 $url = $directorio . $value['filename'];
 
@@ -155,7 +156,7 @@ $directorio = "files/" . $id;
                             function getlink() {
                                 let aux = document.createElement("input");
                                 aux.setAttribute("value",
-                                    '<?php echo $_SERVER['HTTP_HOST'];?>/index.php?share=<?php echo $value['code'];?>');
+                                    '<?php echo $_SERVER['HTTP_HOST'];?>/index.php?share=<?php echo $code_hasheado;?>');
                                 document.body.appendChild(aux);
                                 aux.select();
                                 try {

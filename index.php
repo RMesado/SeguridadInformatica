@@ -1,5 +1,24 @@
 <?php
+include(dirname(__FILE__) . "/includes/share.php");
 session_start();
+$fichero = null;
+$file_size = null;
+if (isset($_GET['share'])){
+    $fichero = get_share($_GET['share']);
+    }
+    if($fichero != null) {
+        $file_size = $fichero['filesize'];
+
+        if ($file_size > (1024 * 1000 * 1000)) {
+            $file_size = round(($file_size / 1024 * 1000 * 1000), 2) . "GB";
+        } else if ($file_size > (1024 * 1000)) {
+            $file_size = round(($file_size / 1024 * 1000), 2) . "MB";
+        } else if ($file_size > 1024) {
+            $file_size = round(($file_size / 1024), 2) . "KB";
+        } else if ($file_size > 0) {
+            $file_size = $file_size . "B";
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -54,9 +73,9 @@ include_once "includes/footer.php";
                         <div class="card shadow-sm">
                             <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
                                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                                 preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                                 preserveAspectRatio="xMidYMid slice" focusable="false"><title>></title>
                                 <rect width="100%" height="100%" fill="#55595c"/>
-                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em"><?php echo $fichero['filename']; echo $file_size?></text>
                             </svg>
                             <div class="card-body">
                                 <p class="card-text">This is a wider card with supporting text below as a natural
