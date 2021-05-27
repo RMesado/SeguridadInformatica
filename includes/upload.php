@@ -21,13 +21,16 @@
             }
 
             $alphabeth = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYZ1234567890_-";
-            $code = "";
-            for ($i = 0; $i < 12; $i++) {
-                $code .= $alphabeth[rand(0, strlen($alphabeth) - 1)];
-            }
 
             $created_at = date("Y-m-d H:i:s");
+
             for ($i = 0; $i < $size; $i++) {
+                $code = "";
+
+                for ($j = 0; $j < 12; $j++) {
+                    $code .= $alphabeth[rand(0, strlen($alphabeth) - 1)];
+                }
+
                 $nombre_img = $_FILES['files']['name'][$i];
                 $filesize = $_FILES['files']['size'][$i];
 

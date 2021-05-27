@@ -27,26 +27,26 @@ label {
 
 /* The Modal (background) */
 .modal {
-/*    display: none; !* Hidden by default *!*/
-/*    position: fixed; !* Stay in place *!*/
-/*    z-index: 1; !* Sit on top *!*/
-/*    left: 0;*/
-/*    top: 0;*/
-/*    width: 100%; !* Full width *!*/
-/*    height: 100%; !* Full height *!*/
-/*    overflow: auto; !* Enable scroll if needed *!*/
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-/*!* Modal Content/Box *!*/
-/*.modal-content {*/
-/*    background-color: #fefefe;*/
-/*    margin: 15% auto; !* 15% from the top and centered *!*/
-/*    padding: 20px;*/
-/*    border: 1px solid #888;*/
-/*    width: 80%; !* Could be more or less, depending on screen size *!*/
-/*}*/
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
 
 /* The Close Button */
 .close {
@@ -68,35 +68,16 @@ a svg {
     color: #fff;
 }
 
-input[type="file"] {
-    /* Apply absolute positioning and move to top-left corner of parent div element */
-    position: absolute;
-    top: 0;
-    left: 0;
-    /* Making the file input element to cover the whole div element */
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    /* Hiding the tap color when it is clicked on touch devices ( this is not widely supported ) */
-    -webkit-tap-highlight-color: transparent;
-    /* Make it invisible ( it is present at it's position but just invisible ) */
-    opacity: 0;
-    /* Move it to the upper layer above the container div's layer to ensure that it is always clickable */
-    z-index: 1;
+.custom-file-label::after  {
+    content: "Elegir archivos";
+    color: #fff;
+    background-color: #343a40;
+    height: calc(1.5em + .87rem);
 }
-
-div.upload-file {
-    /* Our input type file element is going to be absolute positioned so the div element should be relatively positioned to act as container for it. */
-    position: relative;
-    border: 1px solid #ccc;
-    display: inline-block;
-    padding: 6px 70px;
-    cursor: pointer;
-    vertical-align: middle;
-}
-
-div.upload-file label {
-    margin: 0;
+.custom-file-label  {
+    border: none;
+    background-color: #3e444aa8;
+    color: #fff;
 }
 
 .container ul {
@@ -108,8 +89,9 @@ div.upload-file label {
     display: inline-block;
 }
 
-.container li.form-upload {
+.container .form-upload {
     float: right;
+    width: 40%;
 }
 
 .table tbody tr {
@@ -134,6 +116,7 @@ div.upload-file label {
     font-family: sans-serif;
     text-align: center;
 }
+
 @media screen and (max-width: 450px) {
     a.tam {
         font-size: 3.5vw;
@@ -143,6 +126,7 @@ div.upload-file label {
 #registerbtn.btn-outline-info{
     width: 116.8px;
 }
+
 
 .borderGrey {border:2px solid Grey;}
 .borderRed {border-color: red;}

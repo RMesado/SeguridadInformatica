@@ -20,7 +20,12 @@
                         $_SESSION['u_id'] = $result_login['userId'];
                         $_SESSION['username'] = $result_login['username'];
 
-                        decrypt();
+                        $dir = '/files/' . $_SESSION['u_id'] . '/';
+                        $ruta = $_SERVER['DOCUMENT_ROOT'] . $dir;
+
+                        if (is_dir($ruta)){
+                            decrypt();
+                        }
 
                         header('Location: https://filesafety.000webhostapp.com/');
 

@@ -20,14 +20,15 @@ $directorio = "files/" . $id;
         <h3>Listado de archivos</h3>
     </li>
     <li class="form-upload">
-        <form method="post" action="/includes/upload.php" enctype='multipart/form-data'>
-            <div>
-                <label for="fichero" id="nfichero"></label>
-                <div class="upload-file btn-dark">
-                    <label>Elegir archivos</label>
-                    <input type="file" name="files[]" multiple/>
+        <form method="post" action="/includes/upload.php" enctype='multipart/form-data' class="md-form">
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input id="fichero" type="file" class="custom-file-input" name="files[]" multiple/>
+                    <label id="nfichero" class="custom-file-label" for="fichero">Ningún archivo seleccionado</label>
                 </div>
-                <button class="btn btn-info" type="submit" name="upload-files">Subir</button>
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="submit" name="upload-files">Subir</button>
+                </div>
             </div>
         </form>
     </li>
@@ -48,9 +49,11 @@ $directorio = "files/" . $id;
         <?php
         if (!empty($files)) {
             foreach ($files as $columna_files => $value) {
-                $code_hasheado = password_hash($value['code'], PASSWORD_BCRYPT);
+
                 $ftype = explode(".", $value['filename']);
                 $url = $directorio . $value['filename'];
+
+                $code_hasheado = password_hash($value['code'], PASSWORD_BCRYPT);
 
                 //comprobar si es imagen
                 if ($ftype[1] == "png" || $ftype[1] == "jpeg" || $ftype[1] == "gif" || $ftype[1] == "jpg" || $ftype[1] == "bmp") {
@@ -127,53 +130,32 @@ $directorio = "files/" . $id;
                     </td>
                     <td>
                         <?php
-                            $file_size = $value['filesize'];
+                        $file_size = $value['filesize'];
 
-                            if ($file_size > (1024 * 1000 * 1000)) {
-                                $file_size = round(($file_size / 1024 * 1000 * 1000), 2) . "GB";
-                            } else if ($file_size > (1024 * 1000)) {
-                                $file_size = round(($file_size / 1024 * 1000),2) . "MB";
-                            } else if ($file_size > 1024) {
-                                $file_size = round(($file_size / 1024),2) . "KB";
-                            } else if ($file_size > 0) {
-                                $file_size = $file_size . "B";
-                            }
+                        if ($file_size > (1024 * 1000 * 1000)) {
+                            $file_size = round(($file_size / 1024 * 1000 * 1000), 2) . "GB";
+                        } else if ($file_size > (1024 * 1000)) {
+                            $file_size = round(($file_size / 1024 * 1000), 2) . "MB";
+                        } else if ($file_size > 1024) {
+                            $file_size = round(($file_size / 1024), 2) . "KB";
+                        } else if ($file_size > 0) {
+                            $file_size = $file_size . "B";
+                        }
 
-                            echo $file_size;
+                        echo $file_size;
                         ?>
                     </td>
                     <td>
                         <?php echo $value['created_at']; ?>
                     </td>
                     <td>
-                        <a title="Compartir" href="javascript:getlink();">
+                        <a title="Compartir"
+                           href="javascript:getlink('<?php echo $_SERVER['HTTP_HOST'] . '/index.php?share=' . $code_hasheado; ?>');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                  class="bi bi-share" viewBox="0 0 16 16">
                                 <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
                             </svg>
                         </a>
-                        <script>
-                            function getlink() {
-                                let aux = document.createElement("input");
-                                aux.setAttribute("value",
-                                    '<?php echo $_SERVER['HTTP_HOST'];?>/index.php?share=<?php echo $code_hasheado;?>');
-                                document.body.appendChild(aux);
-                                aux.select();
-                                try {
-                                    document.execCommand("copy");
-                                    var aviso = document.createElement("div");
-                                    aviso.setAttribute("id", "aviso");
-                                    var contenido = document.createTextNode("URL copiada");
-                                    aviso.appendChild(contenido);
-                                    document.body.appendChild(aviso);
-                                    window.load = setTimeout("document.body.removeChild(aviso)", 2000);
-                                } catch (e) {
-                                    alert('Tu navegador no soporta la función de copiar');
-                                }
-                                document.body.removeChild(aux);
-
-                            }
-                        </script>
                     </td>
                     <td>
                         <a title="Descargar" download="<?php echo $value['filename']; ?>"

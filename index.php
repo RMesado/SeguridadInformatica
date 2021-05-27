@@ -2,23 +2,25 @@
 include(dirname(__FILE__) . "/includes/share.php");
 session_start();
 $fichero = null;
-$file_size = null;
-if (isset($_GET['share'])){
+$fichero_size = null;
+if (isset($_GET['share'])) {
     $fichero = get_share($_GET['share']);
-    }
-    if($fichero != null) {
-        $file_size = $fichero['filesize'];
+}
+if ($fichero != null) {
+    $fichero_size = $fichero['filesize'];
 
-        if ($file_size > (1024 * 1000 * 1000)) {
-            $file_size = round(($file_size / 1024 * 1000 * 1000), 2) . "GB";
-        } else if ($file_size > (1024 * 1000)) {
-            $file_size = round(($file_size / 1024 * 1000), 2) . "MB";
-        } else if ($file_size > 1024) {
-            $file_size = round(($file_size / 1024), 2) . "KB";
-        } else if ($file_size > 0) {
-            $file_size = $file_size . "B";
-        }
+    if ($fichero_size > (1024 * 1000 * 1000)) {
+        $fichero_size = round(($fichero_size / 1024 * 1000 * 1000), 2) . "GB";
+    } else if ($fichero_size > (1024 * 1000)) {
+        $fichero_size = round(($fichero_size / 1024 * 1000), 2) . "MB";
+    } else if ($fichero_size > 1024) {
+        $fichero_size = round(($fichero_size / 1024), 2) . "KB";
+    } else if ($fichero_size > 0) {
+        $fichero_size = $fichero_size . "B";
     }
+
+    $directorio = "files/".$fichero['user_id'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -67,25 +69,24 @@ include_once "includes/footer.php";
 <div class="modal" id="share" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="titleModal"><?php echo $fichero['filename'];?></h5>
+                <button aria-label="Close" class="close">&times;</button>
+            </div>
             <div class="modal-body">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     <div class="col">
                         <div class="card shadow-sm">
-                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                                 preserveAspectRatio="xMidYMid slice" focusable="false"><title>></title>
-                                <rect width="100%" height="100%" fill="#55595c"/>
-                                <text x="50%" y="50%" fill="#eceeef" dy=".3em"><?php echo $fichero['filename']; echo $file_size?></text>
-                            </svg>
+                           <img title="<?php echo $fichero['filename'];?>" style="align-self: center;" width="50%" height="50%" src="<?php echo $directorio . '/' . $fichero['filename']; ?>"/>
                             <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    </div>
-                                    <small class="text-muted">9 mins</small>
+                                        <a title="Descargar" class="btn btn-sm btn-outline-secondary" download="<?php echo $fichero['filename']; ?>"
+                                           href="<?php echo $directorio . '/' . $fichero['filename']; ?>">
+                                            Descargar
+                                        </a>
+                                        </div>
+                                    <small class="text-muted">Peso: <?php echo $fichero_size ?></small>
                                 </div>
                             </div>
                         </div>
@@ -111,20 +112,26 @@ include_once "includes/footer.php";
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" role="tabpanel">
-                                    <form class="form-group needs-validation" novalidate action="includes/loginUsuario-intermedio.php"
+                                    <form class="form-group needs-validation" novalidate
+                                          action="includes/loginUsuario-intermedio.php"
                                           method="post">
                                         <div class="form-group">
                                             <h4>Usuario</h4>
-                                            <input onkeyup="validacionUsername(this)" type="text" class="form-control" id="reg_username" name="user"
+                                            <input onkeyup="validacionUsername(this)" type="text" class="form-control"
+                                                   id="log_username" name="user"
                                                    placeholder="Introduce usuario o email" required/>
-                                            <div class ="invalid-feedback">Introduce un usuario válido</div>
+                                            <div class="invalid-feedback">Introduce un usuario válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Contraseña</h4>
-                                            <input onkeyup="validacionPasswd(this)" class="form-control" type="password" id="reg_password"
+                                            <input onkeyup="validacionPasswd(this)" class="form-control" type="password"
+                                                   id="log_password"
                                                    name="password"
-                                                   placeholder="Introduce la contraseña" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
-                                            <div class ="invalid-feedback">Introduce una contraseña de al menos 8 caracteres, una mayúscula y un número</div>
+                                                   placeholder="Introduce la contraseña"
+                                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+                                            <div class="invalid-feedback">Introduce una contraseña de al menos 8
+                                                caracteres, una mayúscula y un número
+                                            </div>
                                         </div>
                                         <button class="btn btn-dark btn-block" type="submit" name="loginsubmit">Iniciar
                                             sesión
@@ -160,32 +167,38 @@ include_once "includes/footer.php";
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" role="tabpanel">
-                                    <form class="form-group needs-validation" oninput='password2.setCustomValidity(password2.value != reg_password.value ? "Las contraseñas no coinciden" : "")' novalidate action="includes/regUsuario-intermedio.php" method="post">
+                                    <form class="form-group needs-validation"
+                                          oninput='password2.setCustomValidity(password2.value != reg_password.value ? "Las contraseñas no coinciden" : "")'
+                                          novalidate action="includes/regUsuario-intermedio.php" method="post">
                                         <div class="form-group">
                                             <h4>Usuario</h4>
                                             <input type="text" class="form-control" id="reg_username" name="username"
                                                    placeholder="Introduce un usuario" required/>
-                                            <div class ="invalid-feedback">Introduce un usuario válido</div>
+                                            <div class="invalid-feedback">Introduce un usuario válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Correo</h4>
                                             <input class="form-control" type="email" id="email" name="email"
-                                                   placeholder="Introduce un email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                                   placeholder="Introduce un email"
+                                                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                                    required/>
-                                            <div class ="invalid-feedback">Introduce un email válido</div>
+                                            <div class="invalid-feedback">Introduce un email válido</div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Contraseña</h4>
                                             <input class="form-control" type="password" id="reg_password"
                                                    name="password1"
-                                                   placeholder="Introduce una contraseña" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
-                                            <div class ="invalid-feedback">Introduce una contraseña de al menos 8 caracteres, una mayúscula y un numero</div>
+                                                   placeholder="Introduce una contraseña" minlength="8"
+                                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+                                            <div class="invalid-feedback">Introduce una contraseña de al menos 8
+                                                caracteres, una mayúscula y un numero
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <h4>Confirma la contraseña</h4>
                                             <input class="form-control" type="password" id="password2" name="password2"
                                                    placeholder="Confirma la contraseña" required/>
-                                            <div class ="invalid-feedback">Las contraseñas deben coincidir</div>
+                                            <div class="invalid-feedback">Las contraseñas deben coincidir</div>
                                         </div>
                                         <button class="btn btn-dark btn-block" type="submit" name="registrosubmit">
                                             Registrarse
@@ -205,22 +218,27 @@ include_once "includes/footer.php";
         </div>
     </div>
 </div>
+<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>-->
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
 </script>
 <script type="application/javascript">
     // Get the modal
-    var modal_Login = document.getElementById("login");
-    var modal_register = document.getElementById("register");
-    let modal_share = document.getElementById('share');
+    let modal_Login = document.getElementById("login");
+    let modal_register = document.getElementById("register");
 
     // Get the button that opens the modal
-    var loginbtn = document.getElementById("loginbtn");
-    var registerbtn = document.getElementById("registerbtn");
+    let loginbtn = document.getElementById("loginbtn");
+    let registerbtn = document.getElementById("registerbtn");
 
     // Get the <span> element that closes the modal
-    var span_login = document.getElementsByClassName("close")[0];
-    var span_register = document.getElementsByClassName("close")[1];
+    let span_share = document.getElementsByClassName("close")[0];
+    let span_login = document.getElementsByClassName("close")[1];
+    let span_register = document.getElementsByClassName("close")[2];
 
     // When the user clicks on the button, open the modal
     if (loginbtn != null) {
@@ -242,6 +260,9 @@ include_once "includes/footer.php";
     span_register.onclick = function () {
         modal_register.style.display = "none";
     }
+    span_share.onclick = function () {
+        modal_share.style.display = "none";
+    }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
@@ -255,30 +276,8 @@ include_once "includes/footer.php";
         if (event.target === modal_share) {
             modal_share.style.display = "none";
         }
-    }
-    var input = document.getElementById( 'fichero' );
-    var infoArea = document.getElementById( 'nfichero' );
-    if (input != null) {
-        input.addEventListener( 'change', showFileName );
-    }
-    function showFileName( event ) {
+    };
 
-        var input = event.srcElement;
-        try{var fileName = input.files[0].name;
-            infoArea.textContent = fileName;
-        }catch(error){}
-    }
-
-    <?php
-    if (isset($_GET['share'])){
-    ?>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            modal_share.style.display = 'block';
-        });
-
-    <?php
-    }
-    ?>
     (function () {
         'use strict'
 
@@ -297,6 +296,64 @@ include_once "includes/footer.php";
                 }, false)
             })
     })()
+</script>
+
+<?php
+if (isset($_SESSION['u_id'])) {
+    ?>
+    <script type="application/javascript">
+        let input = document.getElementById('fichero');
+
+
+        input.addEventListener("change", function () {
+            let seleccionados;
+            if (this.files.length > 1) {
+                seleccionados = this.files.length + ' seleccionados';
+            } else {
+                seleccionados = this.files.length + ' seleccionado';
+            }
+            document.getElementById('nfichero').textContent = seleccionados;
+        });
+
+    </script>
+    <?php
+}
+?>
+
+<?php
+if (isset($_GET['share'])) {
+    ?>
+    <script type="application/javascript">
+        let modal_share = document.getElementById('share');
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+            modal_share.style.display = 'block';
+        });
+
+    </script>
+    <?php
+}
+?>
+<script>
+    function getlink(link) {
+        let aux = document.createElement("input");
+        aux.setAttribute("value", link);
+        document.body.appendChild(aux);
+        aux.select();
+        try {
+            document.execCommand("copy");
+            var aviso = document.createElement("div");
+            aviso.setAttribute("id", "aviso");
+            var contenido = document.createTextNode("URL copiada");
+            aviso.appendChild(contenido);
+            document.body.appendChild(aviso);
+            window.load = setTimeout("document.body.removeChild(aviso)", 2000);
+        } catch (e) {
+            alert('Tu navegador no soporta la función de copiar');
+        }
+        document.body.removeChild(aux);
+
+    }
 </script>
 </body>
 </html>

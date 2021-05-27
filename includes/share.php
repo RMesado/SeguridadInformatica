@@ -9,14 +9,13 @@ function get_share($share)
         $consulta = mysqli_query($conn, "SELECT * FROM files");
 
         if (!empty($consulta)) {
-            while($row = mysqli_fetch_assoc($consulta))
+            while ($row = mysqli_fetch_assoc($consulta))
                 $files[] = $row;
         }
 
         if (!empty($files)) {
-            foreach ($files as $columna_files => $value) {
-                $aux = password_verify($share, $value['code']);
-                if($aux){
+            foreach ($files as $value) {
+                if (password_verify($value['code'], $share)) {
                     return $value;
                 }
             }
