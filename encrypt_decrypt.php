@@ -1,113 +1,110 @@
 <?php
-    const FILES = '/files/';
-    const FILE_ENCRYPTION_BLOCKS = 10000;
-    const ITERATIONS = 2000;
+const FILES = '/files/';
+const BLOQUES_CIFRADO_ARCHIVO = 10000;
+const ITERACIONES = 1000;
 
-    function encrypt()
-    {
-        $id_user = $_SESSION['u_id'];
-        $dir = __DIR__.FILES . $id_user . '/';
-        $directorio = opendir($dir);
+//function encrypt()
+//{
+//    $id_user = $_SESSION['u_id'];
+//    $dir = __DIR__ . FILES . $id_user . '/';
+//    $directorio = opendir($dir);
+//
+//    $pass = getPass($id_user);
+//    $sazonado = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
+//    $llave = hash_pbkdf2("sha256", $pass, $sazonado, ITERACIONES, 20);
+//
+//    while ($fichero = readdir($directorio)) {
+//        if ($fichero != '.' && $fichero != '..') {
+//            $filename = $dir . $fichero;
+//            $filenameEnc = $dir . $fichero . '*enc';
+//
+//            cifrar_archivo($filename, $llave, $filenameEnc, $pass);
+//            unlink($filename);
+//        }
+//    }
+//}
 
-        $pass = getPass($id_user);
-        $salt = openssl_random_pseudo_bytes(16);
-        $key = hash_pbkdf2("sha256", $pass, $salt, ITERATIONS, 20);
+function cifrar_archivo($fichero, $llave, $destino, $sazonado)
+{
+    $iv = openssl_random_pseudo_bytes(16);
 
-        while ($fichero = readdir($directorio)) {
-            if ($fichero!= '.' && $fichero != '..')
-            {
-                $filename = $dir.$fichero;
-                $filenameEnc = $dir.$fichero.'*enc';
+    $error = false;
+    if ($fichero_destino = fopen($destino, 'w')) {
 
-                encryptFile($filename, $key, $filenameEnc, $salt);
-                unlink($filename);
+        // Escribe al principio del fichero el sazonado y vector de inicialización
+        fwrite($fichero_destino, $sazonado);
+        fwrite($fichero_destino, $iv);
+
+        if ($fichero_origen = fopen($fichero, 'rb')) {
+            while (!feof($fichero_origen)) {
+                $texto_sin_cifrar = fread($fichero_origen, 16 * BLOQUES_CIFRADO_ARCHIVO);
+                $texto_cifrado = openssl_encrypt($texto_sin_cifrar, 'AES-256-CBC', $llave, OPENSSL_RAW_DATA, $iv);
+
+                // Los primeros 16 bytes del texto cifrado como el siguiente vector de inicialización
+                $iv = substr($texto_cifrado, 0, 16);
+                fwrite($fichero_destino, $texto_cifrado);
             }
-        }
-    }
-
-    function getPass($id_user){
-        require 'conector_BD.php';
-        $conn->set_charset('uft8');
-
-        $result = $conn->query('SELECT * FROM `usuarios` WHERE `userId` = '.$id_user);
-        $row = $result->fetch_assoc();
-
-        return $row['password'];
-    }
-
-    function encryptFile($source, $key, $dest, $salt)
-    {
-        $iv = openssl_random_pseudo_bytes(16);
-
-        $error = false;
-        if ($fpOut = fopen($dest, 'w')) {
-            // Put the initialzation vector to the beginning of the file
-            fwrite($fpOut, $salt);
-            fwrite($fpOut, $iv);
-            if ($fpIn = fopen($source, 'rb')) {
-                while (!feof($fpIn)) {
-                    $plaintext = fread($fpIn, 16 * FILE_ENCRYPTION_BLOCKS);
-                    $ciphertext = openssl_encrypt($plaintext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-                    // Use the first 16 bytes of the ciphertext as the next initialization vector
-                    $iv = substr($ciphertext, 0, 16);
-                    fwrite($fpOut, $ciphertext);
-                }
-                fclose($fpIn);
-            } else {
-                $error = true;
-            }
-            fclose($fpOut);
+            fclose($fichero_origen);
         } else {
             $error = true;
         }
+        fclose($fichero_destino);
+    } else {
+        $error = true;
+    }
 
-        return $error ? null : $dest;
+    return $error;
 }
+//
+//function decrypt()
+//{
+//    $id_user = $_SESSION['u_id'];
+//    $dir = __DIR__ . FILES . $id_user . '/';
+//    $directorio = opendir($dir);
+//
+//    $pass = getPass($id_user);
+//
+//    while ($fichero = readdir($directorio)) {
+//        if ($fichero != '.' && $fichero != '..') {
+//            $filenameEnc = $dir . $fichero;
+//            $file = explode("*", $fichero);
+//            $filename = $dir . $file[0];
+//
+//            descifrar_archivo($filenameEnc, $pass, $filename);
+//            unlink($filenameEnc);
+//        }
+//    }
+//}
 
-    function decrypt(){
-        $id_user = $_SESSION['u_id'];
-        $dir = __DIR__.FILES . $id_user . '/';
-        $directorio = opendir($dir);
+function descifrar_archivo($fichero, $pass, $destino)
+{
+    $error = false;
+    if ($fichero_destino = fopen($destino, 'w')) {
+        if ($fichero_origen = fopen($fichero, 'rb')) {
 
-        $pass = getPass($id_user);
+            // Se obtiene el sazonado y el vector de inicializacion de las primeras líneas del fichero
+            $sazonado = fread($fichero_origen, 16);
+            $iv = fread($fichero_origen, 16);
 
-        while ($fichero = readdir($directorio)) {
-            if ($fichero!= '.' && $fichero != '..')
-            {
-                $filenameEnc = $dir.$fichero;
-                $file  = explode("*", $fichero);
-                $filename = $dir.$file[0];
+            $llave = hash_pbkdf2("sha256", $pass, $sazonado, ITERACIONES, 20);
 
-                decryptFile($filenameEnc, $pass, $filename);
-                unlink($filenameEnc);
+            while (!feof($fichero_origen)) {
+                // Hay que leer un bloque mas para descifrar que para cifrar
+                $texto_cifrado = fread($fichero_origen, 16 * (BLOQUES_CIFRADO_ARCHIVO + 1));
+                $texto_sin_cifrar = openssl_decrypt($texto_cifrado, 'AES-256-CBC', $llave, OPENSSL_RAW_DATA, $iv);
+
+                // Los primeros 16 bytes del texto cifrado como el siguiente vector de inicialización
+                $iv = substr($texto_cifrado, 0, 16);
+                fwrite($fichero_destino, $texto_sin_cifrar);
             }
-        }
-    }
-
-    function decryptFile($source, $pass, $dest)
-    {
-        $error = false;
-        if ($fpOut = fopen($dest, 'w')) {
-            if ($fpIn = fopen($source, 'rb')) {
-                // Get the initialzation vector from the beginning of the file
-                $salt = fread($fpIn, 16);
-                $key = hash_pbkdf2("sha256", $pass, $salt, ITERATIONS, 20);
-                $iv = fread($fpIn, 16);
-                while (!feof($fpIn)) {
-                    $ciphertext = fread($fpIn, 16 * (FILE_ENCRYPTION_BLOCKS + 1)); // we have to read one block more for decrypting than for encrypting
-                    $plaintext = openssl_decrypt($ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-                    // Use the first 16 bytes of the ciphertext as the next initialization vector
-                    $iv = substr($ciphertext, 0, 16);
-                    fwrite($fpOut, $plaintext);
-                }
-                fclose($fpIn);
-            } else {
-                $error = true;
-            }
-            fclose($fpOut);
+            fclose($fichero_origen);
         } else {
             $error = true;
         }
-
-        return $error ? null : $dest." ".$salt;
+        fclose($fichero_destino);
+    } else {
+        $error = true;
     }
+
+    return $error;
+}

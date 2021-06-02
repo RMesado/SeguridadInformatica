@@ -1,5 +1,7 @@
 <?php
     include "conector_BD.php";
+    include "functions.php";
+    include "../encrypt_decrypt.php";
     $conn->set_charset('uft8');
     session_start();
 
@@ -13,7 +15,7 @@
             $tmp = $_FILES['files']['tmp_name'];
 
 
-            $dir = '/files/' . $user_id . '/';
+            $dir = FILES . $user_id . '/';
             $ruta = $_SERVER['DOCUMENT_ROOT'] . $dir;
 
             if (!is_dir($ruta)){
@@ -41,6 +43,11 @@
                 if (!$move && $upload < 1){
                     header('Location: ../index.php?=error_upload');
                 }
+                $pass = getPass($user_id);
+                $sazonado = openssl_random_pseudo_bytes(16);
+                $llave = hash_pbkdf2("sha256", $pass, $sazonado, ITERACIONES, 20);
+                cifrar_archivo($ruta.$nombre_img, $llave, $ruta.$nombre_img.'*enc', $sazonado);
+                unlink($ruta.$nombre_img);
             }
 
             header('Location: ../index.php');

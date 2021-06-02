@@ -1,26 +1,18 @@
 <?php
-include(dirname(__FILE__) . "/includes/share.php");
+include(dirname(__FILE__) . "/includes/functions.php");
 session_start();
 $fichero = null;
 $fichero_size = null;
 if (isset($_GET['share'])) {
-    $fichero = get_share($_GET['share']);
+    $fichero = consultaficheros($_GET['share']);
 }
-if ($fichero != null) {
-    $fichero_size = $fichero['filesize'];
-
-    if ($fichero_size > (1024 * 1000 * 1000)) {
-        $fichero_size = round(($fichero_size / 1024 * 1000 * 1000), 2) . "GB";
-    } else if ($fichero_size > (1024 * 1000)) {
-        $fichero_size = round(($fichero_size / 1024 * 1000), 2) . "MB";
-    } else if ($fichero_size > 1024) {
-        $fichero_size = round(($fichero_size / 1024), 2) . "KB";
-    } else if ($fichero_size > 0) {
-        $fichero_size = $fichero_size . "B";
-    }
-
-    $directorio = "files/".$fichero['user_id'];
+if (!empty($fichero)) {
+    $fichero_size = getSize($fichero['filesize']);
+    $code_hasheado = password_hash($fichero['code'], PASSWORD_BCRYPT);
+    $directorio = "files/" . $fichero['user_id'];
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -47,11 +39,11 @@ include_once "includes/header.php";
         <?php
         if (!isset($_SESSION['u_id'])) {
             ?>
-            <div id="espacioBlanco">
-                <h1>¿Quieres almacenar cosas de forma segura? Has llegado al lugar indicado! :3</h1>
-                <h2>Regístrate o inicia sesión para almacenar tus archivos. Tranquilo/a, estarán seguros con nosotros
-                    jeje</h2>
-                <h2>Y puedes compartirlos medianto una URL! WOW!</h2>
+            <div class="col-md-8 p-lg-8 mx-auto my-6 text-center">
+                <h1 class="display-4 fw-normal">¿Quieres almacenar cosas de forma segura? ¡Has llegado al lugar
+                    indicado! :3</h1>
+                <p class="lead fw-normal">Regístrate o inicia sesión para almacenar tus archivos. Tranquilo/a, estarán
+                    seguros con nosotros jeje. Y puedes compartirlos medianto una URL! WOW!</p>
                 <img alt="gif to guapo" src="https://media.tenor.com/images/5185e189880510119152ade7d0859fcc/tenor.gif">
             </div>
             <?php
@@ -70,28 +62,62 @@ include_once "includes/footer.php";
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h5 class="modal-title" id="titleModal"><?php echo $fichero['filename'];?></h5>
+                <?php
+                $titulo = $fichero != null ? $fichero['filename'] : 'Fichero no encontrado';
+                ?>
+                <h5 class="modal-title" id="titleModal"><?php echo $titulo; ?></h5>
                 <button aria-label="Close" class="close">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    <div class="col">
-                        <div class="card shadow-sm">
-                           <img title="<?php echo $fichero['filename'];?>" style="align-self: center;" width="50%" height="50%" src="<?php echo $directorio . '/' . $fichero['filename']; ?>"/>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <a title="Descargar" class="btn btn-sm btn-outline-secondary" download="<?php echo $fichero['filename']; ?>"
-                                           href="<?php echo $directorio . '/' . $fichero['filename']; ?>">
-                                            Descargar
-                                        </a>
+                <?php
+                if (!empty($fichero)) {
+
+                    $ftype = explode(".", $titulo);
+                    ?>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        <div class="col">
+                            <div class="card shadow-sm">
+<!--                                --><?php
+//                                if (isImage($ftype)) {
+//                                    ?>
+<!--                                    <img alt="--><?php //echo $titulo; ?><!--" title="--><?php //echo $titulo; ?><!--"-->
+<!--                                         style="align-self: center;" width="50%" height="50%"-->
+<!--                                         src="--><?php //echo $directorio . '/' . $titulo; ?><!--"/>-->
+<!--                                    --><?php
+//                                } else {
+//                                    ?>
+                                    <div class="text-center icon-file-share">
+                                        <?php
+                                        echo getIcon($ftype, 210, 210);
+                                        ?>
+                                    </div>
+<!--                                    --><?php
+//                                }
+//                                ?>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <a title="Descargar" class="btn btn-sm btn-outline-secondary"
+                                               href="download.php?code=<?php echo $code_hasheado; ?>">
+                                                Descargar
+                                            </a>
                                         </div>
-                                    <small class="text-muted">Peso: <?php echo $fichero_size ?></small>
+                                        <small class="text-muted">Peso: <?php echo $fichero_size ?></small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="text-center">
+                        <img alt="no encontrado" style="align-self: center;" width="50%" height="50%"
+                             src="images/no-encontrado.svg"/>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -218,10 +244,6 @@ include_once "includes/footer.php";
         </div>
     </div>
 </div>
-<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>-->
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>-->
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">

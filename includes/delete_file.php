@@ -14,7 +14,7 @@
         $result = $conn->query('SELECT * FROM `files` WHERE `id` = '.$id_file);
         $row = $result->fetch_assoc();
 
-        unlink('../'.$directorio.'/'.$row['filename']);
+        unlink('../'.$directorio.'/'.$row['filename'].'*enc');
 
         delete_file($conn, $id_file);
 
