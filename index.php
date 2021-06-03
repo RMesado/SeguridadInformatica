@@ -77,23 +77,11 @@ include_once "includes/footer.php";
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                         <div class="col">
                             <div class="card shadow-sm">
-<!--                                --><?php
-//                                if (isImage($ftype)) {
-//                                    ?>
-<!--                                    <img alt="--><?php //echo $titulo; ?><!--" title="--><?php //echo $titulo; ?><!--"-->
-<!--                                         style="align-self: center;" width="50%" height="50%"-->
-<!--                                         src="--><?php //echo $directorio . '/' . $titulo; ?><!--"/>-->
-<!--                                    --><?php
-//                                } else {
-//                                    ?>
                                     <div class="text-center icon-file-share">
                                         <?php
                                         echo getIcon($ftype, 210, 210);
                                         ?>
                                     </div>
-<!--                                    --><?php
-//                                }
-//                                ?>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">

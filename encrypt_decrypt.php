@@ -3,26 +3,6 @@ const FILES = '/files/';
 const BLOQUES_CIFRADO_ARCHIVO = 10000;
 const ITERACIONES = 1000;
 
-//function encrypt()
-//{
-//    $id_user = $_SESSION['u_id'];
-//    $dir = __DIR__ . FILES . $id_user . '/';
-//    $directorio = opendir($dir);
-//
-//    $pass = getPass($id_user);
-//    $sazonado = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
-//    $llave = hash_pbkdf2("sha256", $pass, $sazonado, ITERACIONES, 20);
-//
-//    while ($fichero = readdir($directorio)) {
-//        if ($fichero != '.' && $fichero != '..') {
-//            $filename = $dir . $fichero;
-//            $filenameEnc = $dir . $fichero . '*enc';
-//
-//            cifrar_archivo($filename, $llave, $filenameEnc, $pass);
-//            unlink($filename);
-//        }
-//    }
-//}
 
 function cifrar_archivo($fichero, $llave, $destino, $sazonado)
 {
@@ -55,26 +35,6 @@ function cifrar_archivo($fichero, $llave, $destino, $sazonado)
 
     return $error;
 }
-//
-//function decrypt()
-//{
-//    $id_user = $_SESSION['u_id'];
-//    $dir = __DIR__ . FILES . $id_user . '/';
-//    $directorio = opendir($dir);
-//
-//    $pass = getPass($id_user);
-//
-//    while ($fichero = readdir($directorio)) {
-//        if ($fichero != '.' && $fichero != '..') {
-//            $filenameEnc = $dir . $fichero;
-//            $file = explode("*", $fichero);
-//            $filename = $dir . $file[0];
-//
-//            descifrar_archivo($filenameEnc, $pass, $filename);
-//            unlink($filenameEnc);
-//        }
-//    }
-//}
 
 function descifrar_archivo($fichero, $pass, $destino)
 {
